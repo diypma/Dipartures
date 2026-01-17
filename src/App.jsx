@@ -1,17 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTflArrivals } from './hooks/useTflArrivals';
 import { ArrivalsBoard } from './components/ArrivalsBoard';
-
 import { ServiceStatus } from './components/ServiceStatus';
+import { Settings } from './components/Settings';
+import { getDirectionLabel } from './utils/lineDirections';
 
 function App() {
-  const { arrivals, loading, error } = useTflArrivals();
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem('tubeSettings');
+    return saved ? JSON.parse(saved) : {
+      lineId: 'northern',
+      stopPointId: '940GZZLUTBC',
+      direction: 'outbound',
+      lineName: 'Northern',
+      stationName: 'Tooting Bec Underground Station'
+    };
+  });
+
+  const { arrivals, loading, error } = useTflArrivals(settings.lineId, settings.stopPointId, settings.direction);
+
+  const handleSettingsChange = (newSettings) => {
+    setSettings(newSettings);
+    localStorage.setItem('tubeSettings', JSON.stringify(newSettings));
+  };
+
+  // Extract station name without "Underground Station"
+  const displayStationName = settings.stationName.replace(' Underground Station', '');
+  const displayDirection = getDirectionLabel(settings.lineId, settings.direction);
 
   return (
     <div className="app-container">
-      <h1>Tooting Bec <br /><span style={{ fontSize: '0.5em' }}>Northbound</span></h1>
+      <Settings onSettingsChange={handleSettingsChange} currentSettings={settings} />
+      <h1>{displayStationName} <br /><span style={{ fontSize: '0.5em' }}>{displayDirection}</span></h1>
       <ArrivalsBoard arrivals={arrivals} loading={loading} error={error} />
-      <ServiceStatus />
+      <ServiceStatus lineId={settings.lineId} />
     </div>
   );
 }

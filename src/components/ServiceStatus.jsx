@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTflStatus } from '../hooks/useTflStatus';
 
-export function ServiceStatus() {
-    const { status, reason, loading } = useTflStatus();
+export function ServiceStatus({ lineId = 'northern' }) {
+    const { status, reason, loading } = useTflStatus(lineId);
 
     if (loading) return null;
 

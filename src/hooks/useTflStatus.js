@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const LINE_ID = 'northern';
-
-export function useTflStatus() {
+export function useTflStatus(lineId = 'northern') {
     const [status, setStatus] = useState(null);
     const [reason, setReason] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,7 +9,7 @@ export function useTflStatus() {
         const fetchStatus = async () => {
             try {
                 const response = await fetch(
-                    `https://api.tfl.gov.uk/Line/${LINE_ID}/Status`
+                    `https://api.tfl.gov.uk/Line/${lineId}/Status`
                 );
                 if (!response.ok) {
                     throw new Error('Failed to fetch status');
@@ -35,7 +33,7 @@ export function useTflStatus() {
         // Refresh every 60 seconds
         const interval = setInterval(fetchStatus, 60000);
         return () => clearInterval(interval);
-    }, []);
+    }, [lineId]);
 
     return { status, reason, loading };
 }
