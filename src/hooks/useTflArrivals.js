@@ -19,10 +19,15 @@ export function useTflArrivals() {
                 }
                 const data = await response.json();
 
-                // Filter for Northbound trains (checking platformName or direction)
-                // Usually inbound for Northern line from South is Northbound
+                // Filter for Northbound trains (checking platformName)
+                // IMPORTANT: The API sometimes marks Southbound Morden trains as 'inbound' too.
+                // We must rely on 'Northbound' in platform name and explicitly exclude Morden.
                 const northbound = data
-                    .filter(train => train.direction === 'inbound' || train.platformName.includes('Northbound'))
+                    .filter(train => {
+                        const isNorthbound = train.platformName.includes('Northbound');
+                        const isNotMorden = train.destinationName !== 'Morden Underground Station';
+                        return isNorthbound && isNotMorden;
+                    })
                     .sort((a, b) => a.timeToStation - b.timeToStation);
 
                 setArrivals(northbound);
