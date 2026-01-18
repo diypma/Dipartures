@@ -1,0 +1,17 @@
+{
+    "name": "Tube Wait Time",
+    "short_name": "TubeWait",
+    "description": "Real-time London Underground arrival board with custom walking offsets.",
+    "start_url": "/tube-wait-time/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#ff3300",
+    "icons": [
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
