@@ -37,8 +37,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Navigation requests (HTML) should ALWAYS go to network first to ensure
-    // we get the latest 'index.html' which contains the hashes for new JS files.
+    // Skip TFL API calls - let the app handle those directly with its own retry/error logic
+    if (event.request.url.includes('api.tfl.gov.uk')) {
+        return;
+    }
+
+    // Navigation requests (HTML)
     if (event.request.mode === 'navigate') {
         event.respondWith(
             fetch(event.request)
@@ -49,8 +53,9 @@ self.addEventListener('fetch', (event) => {
                     });
                 })
                 .catch(() => {
-                    // If offline, try cache
-                    return caches.match(event.request);
+                    return caches.match(event.request).then(response => {
+                        return response || caches.match('/tube-wait-time/index.html');
+                    });
                 })
         );
         return;
@@ -62,18 +67,24 @@ self.addEventListener('fetch', (event) => {
             if (cachedResponse) {
                 return cachedResponse;
             }
-            return fetch(event.request).then((response) => {
-                if (!response || response.status !== 200 || response.type !== 'basic') {
-                    return response;
-                }
-                const responseToCache = response.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                    if (event.request.url.startsWith(self.location.origin)) {
-                        cache.put(event.request, responseToCache);
+            return fetch(event.request)
+                .then((response) => {
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response;
                     }
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        if (event.request.url.startsWith(self.location.origin)) {
+                            cache.put(event.request, responseToCache);
+                        }
+                    });
+                    return response;
+                })
+                .catch(() => {
+                    // Fallback for missing assets when offline - return null or a descriptive error
+                    // Returning a simple 404-like response is better than letting the promise reject
+                    return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
                 });
-                return response;
-            });
         })
     );
 });
