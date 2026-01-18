@@ -12,6 +12,7 @@ function App() {
       lineId: 'northern',
       stopPointId: '940GZZLUTBC',
       direction: 'outbound',
+      walkingOffset: 0,
       lineName: 'Northern',
       stationName: 'Tooting Bec Underground Station'
     };
@@ -31,8 +32,18 @@ function App() {
   return (
     <div className="app-container">
       <Settings onSettingsChange={handleSettingsChange} currentSettings={settings} />
-      <h1>{displayStationName} <br /><span style={{ fontSize: '0.5em' }}>{displayDirection}</span></h1>
-      <ArrivalsBoard arrivals={arrivals} loading={loading} error={error} />
+      <h1>
+        {displayStationName} <br />
+        <span style={{ fontSize: '0.4em', color: '#ff6600' }}>
+          {settings.lineName} Line - {displayDirection}
+        </span>
+      </h1>
+      <ArrivalsBoard
+        arrivals={arrivals}
+        loading={loading}
+        error={error}
+        walkingOffset={settings.walkingOffset}
+      />
       <ServiceStatus lineId={settings.lineId} />
     </div>
   );

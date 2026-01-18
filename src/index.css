@@ -109,6 +109,7 @@ h1 {
   color: #ff3300;
   /* Red for disruptions */
 }
+
 /* Mobile Optimizations */
 @media (max-width: 600px) {
   #root {
@@ -208,8 +209,10 @@ h1 {
   font-size: 1rem;
 }
 
-.setting-group select {
+.setting-group select,
+.setting-group input {
   width: 100%;
+  box-sizing: border-box;
   background: #222;
   color: #ff6600;
   border: 2px solid #ff6600;
@@ -266,7 +269,8 @@ h1 {
     font-size: 0.9rem;
   }
 
-  .setting-group select {
+  .setting-group select,
+  .setting-group input {
     font-size: 0.85rem;
     padding: 0.6rem;
   }

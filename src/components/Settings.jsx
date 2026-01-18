@@ -8,6 +8,7 @@ export function Settings({ onSettingsChange, currentSettings }) {
     const [selectedLine, setSelectedLine] = useState(currentSettings.lineId);
     const [selectedStation, setSelectedStation] = useState(currentSettings.stopPointId);
     const [selectedDirection, setSelectedDirection] = useState(currentSettings.direction);
+    const [selectedOffset, setSelectedOffset] = useState(currentSettings.walkingOffset || 0);
     const [loading, setLoading] = useState(false);
 
     // Fetch tube lines on mount
@@ -42,6 +43,7 @@ export function Settings({ onSettingsChange, currentSettings }) {
             lineId: selectedLine,
             stopPointId: selectedStation,
             direction: selectedDirection,
+            walkingOffset: parseInt(selectedOffset, 10) || 0,
             lineName: lines.find(l => l.id === selectedLine)?.name || '',
             stationName: stations.find(s => s.id === selectedStation)?.name || ''
         };
@@ -106,6 +108,19 @@ export function Settings({ onSettingsChange, currentSettings }) {
                                     </option>
                                 ))}
                             </select>
+                        </div>
+
+                        <div className="setting-group">
+                            <label>Walking Offset (mins):</label>
+                            <input
+                                type="number"
+                                min="0"
+                                max="60"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={selectedOffset}
+                                onChange={(e) => setSelectedOffset(e.target.value)}
+                            />
                         </div>
 
                         <div className="settings-actions">
