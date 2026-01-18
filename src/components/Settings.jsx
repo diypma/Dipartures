@@ -43,7 +43,7 @@ export function Settings({ onSettingsChange, currentSettings }) {
                     });
 
                     if (orderedStations.length > 0) {
-                        setStations(orderedStations);
+                        setStations(orderedStations.reverse());
                         setLoading(false);
                     } else {
                         // If no sequence found, fall back to simple alphabetical list
