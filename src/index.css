@@ -247,7 +247,8 @@ h1 {
   border: 2px solid #ff6600;
   padding: 0.75rem;
   font-family: 'DotGothic16', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  /* 16px minimum to prevent iOS Safari auto-zoom */
   border-radius: 5px;
   cursor: pointer;
   -webkit-appearance: none;
@@ -269,7 +270,8 @@ h1 {
 
 .settings-actions button {
   flex: 1;
-  min-width: 120px;
+  min-width: 100px;
+  /* Reduced min-width to help them fit better on small screens */
   background: #222;
   color: #ff6600;
   border: 2px solid #ff6600;
@@ -307,7 +309,7 @@ h1 {
   }
 
   .settings-content {
-    padding: 1.5rem;
+    padding: 1.2rem;
   }
 
   .setting-group label {
@@ -316,7 +318,8 @@ h1 {
 
   .setting-group select,
   .setting-group input {
-    font-size: 0.85rem;
+    font-size: 1rem;
+    /* Maintain 16px even on mobile to prevent zoom */
     padding: 0.6rem;
   }
 }
