@@ -1,6 +1,5 @@
-const CACHE_NAME = 'tube-wait-v2';
+const CACHE_NAME = 'tube-wait-v3';
 
-// Only cache core distinct files that don't change names often
 const STATIC_ASSETS = [
     '/tube-wait-time/',
     '/tube-wait-time/index.html',
@@ -10,16 +9,20 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // Force new SW to activate immediately
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(STATIC_ASSETS);
+            // Use relative paths if possible, but hardcoded absolute paths are safer for now 
+            // given the scope. If the fetch fails (likely 404 on local dev due to /tube-wait-time/ prefix), 
+            // we log it but don't hard-fail the install.
+            return cache.addAll(STATIC_ASSETS).catch(err => {
+                console.warn('Failed to cache core assets on install:', err);
+            });
         })
     );
 });
 
 self.addEventListener('activate', (event) => {
-    // Clean up old caches
     event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
@@ -29,40 +32,48 @@ self.addEventListener('activate', (event) => {
                     }
                 })
             );
-        }).then(() => self.clients.claim()) // Take control of all clients immediately
+        }).then(() => self.clients.claim())
     );
 });
 
 self.addEventListener('fetch', (event) => {
+    // Navigation requests (HTML) should ALWAYS go to network first to ensure
+    // we get the latest 'index.html' which contains the hashes for new JS files.
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .then((networkResponse) => {
+                    return caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, networkResponse.clone());
+                        return networkResponse;
+                    });
+                })
+                .catch(() => {
+                    // If offline, try cache
+                    return caches.match(event.request);
+                })
+        );
+        return;
+    }
+
+    // For everything else (assets, images), try cache first, then network
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
-            // Return cached response if found
             if (cachedResponse) {
                 return cachedResponse;
             }
-
-            // Otherwise fetch from network
             return fetch(event.request).then((response) => {
-                // Check if valid response
                 if (!response || response.status !== 200 || response.type !== 'basic') {
                     return response;
                 }
-
-                // Cache the new resource (dynamic caching for hashed assets)
                 const responseToCache = response.clone();
                 caches.open(CACHE_NAME).then((cache) => {
-                    // Don't cache API calls or other external stuff if possible, 
-                    // but for simplicity we cache everything from same origin
                     if (event.request.url.startsWith(self.location.origin)) {
                         cache.put(event.request, responseToCache);
                     }
                 });
-
                 return response;
             });
-        }).catch(() => {
-            // Offline fallback? We can just return nothing or a fallback page.
-            // For now, let it fail if offline and not in cache.
         })
     );
 });
