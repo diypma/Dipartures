@@ -34,10 +34,15 @@ export function ArrivalsBoard({ arrivals, loading, error, walkingOffset = 0 }) {
                 }
                 destination = destination.replace('via CX', 'via Charing Cross');
 
+                const isScheduled = train.isScheduled;
+                const timeDisplay = isScheduled
+                    ? `🕒 ${train.scheduledTime}`
+                    : formatTime(train.adjustedTime);
+
                 return (
-                    <div key={train.id} className="arrival-row">
-                        <span className="destination">{destination}</span>
-                        <span className="time">{formatTime(train.adjustedTime)}</span>
+                    <div key={train.id} className={`arrival-row ${isScheduled ? 'scheduled-row' : ''}`}>
+                        <span className="destination">{destination} {isScheduled ? <span className="sched-tag">(Sched)</span> : ''}</span>
+                        <span className="time">{timeDisplay}</span>
                     </div>
                 );
             })}

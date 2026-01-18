@@ -239,6 +239,19 @@ h1 {
   font-size: 0.95rem;
 }
 
+.scheduled-row {
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.sched-tag {
+  font-size: 0.7em;
+  color: #aaa;
+  margin-left: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .setting-group select,
 .setting-group input {
   width: 100%;
