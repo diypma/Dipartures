@@ -129,7 +129,7 @@ h1 {
 @media (max-width: 600px) {
   #root {
     padding: 1.5rem 1rem;
-    padding-top: calc(1.5rem + env(safe-area-inset-top));
+    padding-top: calc(2rem + env(safe-area-inset-top));
   }
 
   h1 {
@@ -167,7 +167,8 @@ h1 {
 /* Settings Button */
 .settings-button {
   position: absolute;
-  top: calc(1rem + env(safe-area-inset-top));
+  top: calc(1.5rem + env(safe-area-inset-top));
+  /* Increased buffer for Dynamic Island/Notch */
   right: 1.2rem;
   background: #222;
   color: #ff6600;
@@ -302,8 +303,8 @@ h1 {
 /* Mobile adjustments for settings */
 @media (max-width: 600px) {
   .settings-button {
-    top: 0.5rem;
-    right: 0.5rem;
+    top: calc(1.2rem + env(safe-area-inset-top));
+    right: 0.8rem;
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
   }
