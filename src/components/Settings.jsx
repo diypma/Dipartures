@@ -127,6 +127,16 @@ export function Settings({ onSettingsChange, currentSettings }) {
                                 pattern="[0-9]*"
                                 value={selectedOffset}
                                 onChange={(e) => setSelectedOffset(e.target.value)}
+                                onFocus={(e) => {
+                                    if (selectedOffset === 0 || selectedOffset === '0') {
+                                        setSelectedOffset('');
+                                    }
+                                }}
+                                onBlur={() => {
+                                    if (selectedOffset === '') {
+                                        setSelectedOffset(0);
+                                    }
+                                }}
                             />
                         </div>
 
