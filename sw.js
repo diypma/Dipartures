@@ -1,11 +1,11 @@
-const CACHE_NAME = 'tube-wait-v3';
+const CACHE_NAME = 'dipartures-v1';
 
 const STATIC_ASSETS = [
-    '/tube-wait-time/',
-    '/tube-wait-time/index.html',
-    '/tube-wait-time/manifest.webmanifest',
-    '/tube-wait-time/icon-512.png',
-    '/tube-wait-time/vite.svg'
+    '/Dipartures/',
+    '/Dipartures/index.html',
+    '/Dipartures/manifest.webmanifest',
+    '/Dipartures/icon-512.png',
+    '/Dipartures/vite.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -13,7 +13,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             // Use relative paths if possible, but hardcoded absolute paths are safer for now 
-            // given the scope. If the fetch fails (likely 404 on local dev due to /tube-wait-time/ prefix), 
+            // given the scope. If the fetch fails (likely 404 on local dev due to /Dipartures/ prefix), 
             // we log it but don't hard-fail the install.
             return cache.addAll(STATIC_ASSETS).catch(err => {
                 console.warn('Failed to cache core assets on install:', err);
@@ -54,7 +54,7 @@ self.addEventListener('fetch', (event) => {
                 })
                 .catch(() => {
                     return caches.match(event.request).then(response => {
-                        return response || caches.match('/tube-wait-time/index.html');
+                        return response || caches.match('/Dipartures/index.html');
                     });
                 })
         );
