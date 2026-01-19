@@ -44,6 +44,21 @@ h1 {
   text-align: center;
 }
 
+
+.app-branding {
+  font-family: 'DotGothic16', monospace;
+  color: var(--led-amber);
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  background: #000;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 174, 0, 0.3);
+  text-shadow: 0 0 5px var(--led-dim);
+  box-shadow: 0 0 10px rgba(255, 174, 0, 0.1);
+  margin-bottom: 8px;
+}
+
 .station-header {
   margin-bottom: 2.5rem;
   display: flex;

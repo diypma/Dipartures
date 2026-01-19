@@ -131,6 +131,7 @@ function App() {
       />
 
       <header className="station-header">
+        <div className="app-branding">DIPARTURES</div>
         <div className="station-sign interactive" onClick={() => openSettings('station')} title="Settings">
           <h1>{displayStationName}</h1>
         </div>
